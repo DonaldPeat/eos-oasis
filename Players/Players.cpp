@@ -63,7 +63,20 @@ namespace Oasis {
 
             //@abi action
             void getplayer(const account_name account) {
+              playerIndex players(_self,_self);
 
+              auto iterator = players.find(account);
+              eosio_assert(iterator != players.end(), "Address for account not found");
+
+              //return reference to object that contains secondary primary_key
+              auto currentPlayer = players.get(account);
+
+              //print user stats
+              print(
+                "Username: ", currentPlayer.username.c_str(),
+                "\nLevel: ", currentPlayer.level,
+                "\nHealth: ", currentPlayer.health_points,
+                "\nEnergy: ", currentPlayer.energy_points);
             }
 
         private:
