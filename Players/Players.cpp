@@ -35,8 +35,30 @@ namespace Oasis {
             }
 
             //@abi action
-            void update(const account_name account) {
+            void update(account_name account, uint64_t level, int64_t healthPoints, int64_t energyPoints) {
+              require_auth(account);
 
+              playerIndex players(_self,_self);
+
+              auto iterator = players.find(account);
+              eosio_assert(iterator != players.end(), "Address for account not found");
+
+              //update player stats
+              players.modify(iterator, account, [&](auto& player) {
+                player.level = level;
+
+                if ((player.health_points - healthPoints) < 0) {
+                  player.health_points = 0;
+                } else {
+                  player.health_points -= healthPoints;
+                }
+
+                if ((player.energy_points - energyPoints) < 0) {
+                  player.energy_points = 0;
+                } else {
+                  player.energy_points -= energyPoints;
+                }
+              });
             }
 
             //@abi action
